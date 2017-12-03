@@ -8,7 +8,7 @@ var shipImage, bulletImage, particleImage;
 var MARGIN = 40;
 
 function setup() {
-    createCanvas(1200,800);
+    createCanvas(1400,800);
 
     bulletImage = loadImage("assets/asteroids_bullet_20.png");
     shipImage = loadImage("assets/ship_rot.png");
@@ -36,9 +36,13 @@ function setup() {
 function draw() {
     background(0);
   
-    fill(255);
+    fill(255, 0, 0);
     textAlign(CENTER);
-    text("Controls: Arrow Keys + X", width/2, 20);
+    text("Time:", width/2-40, 20);
+
+    fill(0, 0, 255);
+    textAlign(CENTER);
+    text("Time:", width/2+40, 20);
   
     for(var i=0; i<allSprites.length; i++) {
 	var s = allSprites[i];
