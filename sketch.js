@@ -98,7 +98,7 @@ function draw() {
         redShips[0].addSpeed(2.9, redShips[0].rotation);
         redShips[0].changeAnimation("thrust");
     }
-    else
+    else{
 	redShips[0].changeAnimation("normal");
     }
     
@@ -111,7 +111,7 @@ function draw() {
         blueShips[0].addSpeed(2.9, blueShips[0].rotation);
         blueShips[0].changeAnimation("thrust");
     }
-    else
+    else{
 	blueShips[0].changeAnimation("normal");
         //ship.changeAnimation("thrust");
     }
