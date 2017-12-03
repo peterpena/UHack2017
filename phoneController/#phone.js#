@@ -1,4 +1,4 @@
-var canvasWidth, canvasHeight;
+úÙ¯ËÅÁvar canvasWidth, canvasHeight;
 
 //Create joysticks
 var radius = 40;
@@ -55,7 +55,7 @@ function webGLStart() {
     socket.on('assignment', function(msg) {
 	    teamAssignment(msg);
 	});
-    socket.emit('assignmentRequest');
+    socket.emit('assignRequest');
     //var locked = screen.lockOrientation("landscape");
 
     //if(!locked)
@@ -148,7 +148,7 @@ function webGLStart() {
         		moveX = (speed * Math.cos(angle));
         		moveY = (speed * Math.sin(angle));
 		  
-			var pos = [team, moveX, moveY, speed];
+			var pos = [team, moveX, moveY];
 			socket.emit('move', pos);
         	}
         	

@@ -21,6 +21,10 @@ const RED = 0;
 const BLUE = 1;
 const NONE = 2;
 
+var redShoot = false;
+var blueShoot = false;
+var redMove = false;
+var blueMove = false;
 
 function setup() {
     createCanvas(1400,800);
@@ -131,14 +135,24 @@ function draw() {
     if(keyDown("s"))
     {
         blueShips[0].addSpeed(2.9, blueShips[0].rotation);
-        blueShips[0].changeAnimation("thrust");
     }
     else{
 	blueShips[0].changeAnimation("normal");
         //ship.changeAnimation("thrust");
     }
     
-    if(keyWentDown("x"))
+    if(redMove) {
+      redShips[0].changeAnimation("thrust");
+    } else {
+      redShips[0].changeAnimation("normal");
+    }
+    if(blueMove) {
+      blueShips[0].changeAnimation("thrust");
+    } else {
+      blueShips[0].changeAnimation("normal");
+    }
+
+    if(redShoot)
     {
         var bullet = createSprite(redShips[0].position.x, redShips[0].position.y);
         bullet.addImage(bulletImage);
@@ -146,9 +160,10 @@ function draw() {
         bullet.rotation = redShips[0].rotation;
         bullet.life = 60;
         redBullets.add(bullet);
+        redShoot = false;
     }
 
-    if(keyWentDown("w"))
+    if(blueShoot)
     {
         var bullet = createSprite(blueShips[0].position.x, blueShips[0].position.y);
         bullet.addImage(bulletImage);
@@ -156,6 +171,7 @@ function draw() {
         bullet.rotation = blueShips[0].rotation;
         bullet.life = 60;
         blueBullets.add(bullet);
+        blueShoot = false;
     }
 
   
@@ -269,4 +285,39 @@ function shipHit(ship, bullet){
 	ship.type = 10;
     }
        
+}
+
+function move(name, x, y, t){
+    if(name ==  "blue"){
+        blueShips[0].addSpeed(t, 180*Math.atan2(y, x)/Math.PI);
+        blueShips[0].rotation = 180*Math.atan2(y, x)/Math.PI;
+        blueMove = true;
+    }
+    else{
+        redShips[0].addSpeed(t, 180*Math.atan2(y, x)/Math.PI);
+        redShips[0].rotation = 180*Math.atan2(y, x)/Math.PI;
+        redMove = true;
+    }
+    shoot(name);
+}
+
+function shoot(name){
+ 
+    if(name == "red")
+    {
+      redShoot = true;
+    }
+
+    if(name == "blue")
+    {
+      blueShoot = true;
+    }
+
+
+    if(name ==  "blue"){
+	console.log("Blue ship shoot");
+    }
+    else{
+	console.log("Red ship shoot");
+    }
 }
