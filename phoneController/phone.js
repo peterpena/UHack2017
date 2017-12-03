@@ -17,6 +17,8 @@ var manager;
 var joystickL = -1;
 var joystickR = -1;
 
+var nippleEnabled = false;
+
 //The X and Y that the ship will move in the next frame
 var moveX = 0;
 var moveY = 0;
@@ -27,6 +29,8 @@ var team;
 var speed = 1; //2.9?
 
 var socket;
+//Bool for shoot
+var shoot = false;
 
 //var options = { color: "#FF0000", size: 40, threshold: 5, maxNumberOfNipples: 2, mode: "dynamic" };
 //var manager = nipplejs.create(options);
@@ -46,8 +50,14 @@ function tick() {
 	}
 
 	//console.log(manager.ids);
-	console.log("moveX = " + moveX);
-	console.log("moveY = " + moveY);
+	//console.log("moveX = " + moveX);
+	//console.log("moveY = " + moveY);
+	//console.log("shoot = " + shoot);
+
+	//SEND DATA HERE
+	
+
+	shoot = false;
 };
 
 function webGLStart() {
@@ -83,7 +93,6 @@ function webGLStart() {
 	canvas.onmousedown = handleMouseDown;
 	document.onmouseup = handleMouseUp;
 	canvas.onmousemove = handleMouseMove;
-
 	// set the key functions
 	document.onkeydown = handleKeyDown;
 	document.onkeypress = handleKeyPress;
@@ -92,9 +101,9 @@ function webGLStart() {
 	
 	//Set touch functions
 
-	canvas.addEventListener("touchstart", handleTouchStart, false);
+	document.body.addEventListener("touchstart", handleTouchStart, false);
 	canvas.addEventListener("touchmove", handleTouchMove, false);
-	canvas.addEventListener("touchend", handleTouchEnd, false);
+	document.body.addEventListener("touchend", handleTouchEnd, false);
 
 
 	var w = canvasWidth;
@@ -104,7 +113,7 @@ function webGLStart() {
 	//connection = new WebSocket('ws://peaceful-lake-7978.herokuapp.com/');
 	//connection.onmessage = receiveMessage;
 
-	var options = { color: "#FF0000", multitouch: "true",  maxNumberOfNipples: 2 };
+	var options = { color: "#0000FF" };
 	manager = nipplejs.create(options);
 
 	//Nipple Event Listeners
@@ -133,6 +142,8 @@ function webGLStart() {
         			joystickR = nipple.id;
         		}
         	}
+
+        	nippleEnabled = true;
 
         	//console.log("left nipple = " + joystickL);
         	//console.log("right nipple = " + joystickR);
@@ -170,6 +181,8 @@ function webGLStart() {
         	//Set move values to 0
         	moveX = 0;
         	moveY = 0;
+
+        	nippleEnabled = false;
    		});
 	}).on('removed', function (evt, nipple) {
     	nipple.off('start move end');
@@ -188,24 +201,30 @@ function handleTouchStart(event){
 	/*
 	if(touches.length >= 2)
 		return;
-
 	var touch = touches[touches.length-1];
-
 	var dx = touch.clientX - joystick1.centerX;
 	var dy = touch.clientY - joystick1.centerY;
-
 	if((dx * dx + dy * dy) <= (joystick1.radius * joystick1.radius))
 		joystick1.handleTouchStart(touch);
-
-
 	dx = touch.clientX - joystick2.centerX;
 	dy = touch.clientY - joystick2.centerY;
-
 	if((dx * dx + dy * dy) <= (joystick2.radius * joystick2.radius))
 		joystick2.handleTouchStart(touch);
 	*/
 
+	//Shoot here
+	if(nippleEnabled){
+		//Shoot
+		/*
+	var c = document.getElementById("canvas");
+	var ctx = c.getContext("2d");
+	ctx.fillStyle = "#FF0000";
+	ctx.fillRect(0, 0, c.width, c.height);
+	*/
+	document.body.style.backgroundColor = "red";
+	shoot = true;
 
+	}
 
 }
 
@@ -232,6 +251,7 @@ function handleTouchMove(event){
 function handleTouchEnd(event){
 	event.preventDefault();
 
+	/*
 	var touch = touches[touches.length-1];
 
 	var dx = touch.clientX - joystick1.centerX;
@@ -245,18 +265,29 @@ function handleTouchEnd(event){
 
 	if((dx * dx + dy * dy) <= (joystick2.radius * joystick2.radius))
 		joystick2.handleTouchEnd(touch);
+	*/
+
+	/*
+	var c = document.getElementById("canvas");
+	var ctx = c.getContext("2d");
+	ctx.fillStyle = "#FFFFFF";
+	ctx.fillRect(0, 0, c.width, c.height);
+	*/
+	document.body.style.backgroundColor = "white";
 }
 
 function render() {
 
 	//Clear the screen
 	//gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    var canvas = document.getElementById("canvas");
-    var context = canvas.getContext("2d");
-    context.clearRect(0, 0, canvas.width, canvas.height);
+ //    var c = document.getElementById("canvas");
+	// var ctx = c.getContext("2d");
+	// ctx.fillStyle = "#FF0000";
+	// ctx.fillRect(0, 0, c.width, c.height);
+    //context.clearRect(0, 0, canvas.width, canvas.height);
 
 	//Draw the joysticks
-	var canvas = document.getElementById("canvas");
+	//var canvas = document.getElementById("canvas");
 	//joystick1.draw(canvas);
 	//joystick2.draw(canvas);
 
