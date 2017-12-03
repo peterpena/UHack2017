@@ -24,6 +24,13 @@ var moveY = 0;
 //The speed at which the ship will move
 var speed = 1; //2.9?
 
+var buttonX = 50;
+var buttonY;
+var buttonWidth = 150;
+var buttonHeight = 50;
+var buttonRegionWidth = 250;
+var buttonClicked;
+
 
 //var options = { color: "#FF0000", size: 40, threshold: 5, maxNumberOfNipples: 2, mode: "dynamic" };
 //var manager = nipplejs.create(options);
@@ -42,10 +49,43 @@ function tick() {
 		console.log(err.message);
 	}
 
+  drawShootButton(buttonCanvas);
+
 	//console.log(manager.ids);
 	console.log("moveX = " + moveX);
 	console.log("moveY = " + moveY);
+  if (moveX > 0  || moveY > 0) {
+    //send message
+    // console.log(new Date() + " " + moveX + ", " +moveY);
+  }
 };
+
+function drawShootButton(canvas) {
+  var ctx = canvas.getContext('2d');
+  ctx.fillStyle = 'green';
+  ctx.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
+  ctx.fillStyle = 'black';
+
+  ctx.font = "30px Arial";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle"; 
+  ctx.fillText("SHOOT", buttonX+buttonWidth/2, buttonY+buttonHeight/2);
+}
+
+// function getButtonClick() {
+//   var x;
+//   var y;
+//   if (e.pageX || e.pageY) { 
+//     x = e.pageX;
+//     y = e.pageY;
+//   }
+//   else { 
+//     x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft; 
+//     y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop; 
+//   } 
+//   x -= gCanvasElement.offsetLeft;
+//   y -= gCanvasElement.offsetTop;
+// }
 
 function webGLStart() {
     //var locked = screen.lockOrientation("landscape");
@@ -53,15 +93,20 @@ function webGLStart() {
     //if(!locked)
     	//console.log("Didn't lock orientation");
 	// get the canvas DOM element
-	var canvas = document.getElementById("canvas");
+  var canvas = document.getElementById("canvas");
+	var buttonCanvas = document.getElementById("buttonCanvas");
 
-	canvas.width = screen.width;
+	canvas.width = screen.width-buttonRegionWidth;
 	canvas.height = screen.height;
+
+  buttonCanvas.width = buttonRegionWidth;
+  buttonCanvas.height = screen.height;
 
 	rect = canvas.getBoundingClientRect();
 
 	canvasWidth = canvas.width;
 	canvasHeight = canvas.height;
+  buttonY = canvasHeight/2;
 
 	// Using the google provided WebGLUtils to grab the gl
 	// context in the safest way possible
@@ -75,7 +120,6 @@ function webGLStart() {
 	canvas.onmousedown = handleMouseDown;
 	document.onmouseup = handleMouseUp;
 	canvas.onmousemove = handleMouseMove;
-
 	// set the key functions
 	document.onkeydown = handleKeyDown;
 	document.onkeypress = handleKeyPress;
@@ -83,7 +127,6 @@ function webGLStart() {
 
 	
 	//Set touch functions
-
 	canvas.addEventListener("touchstart", handleTouchStart, false);
 	canvas.addEventListener("touchmove", handleTouchMove, false);
 	canvas.addEventListener("touchend", handleTouchEnd, false);
@@ -96,7 +139,7 @@ function webGLStart() {
 	//connection = new WebSocket('ws://peaceful-lake-7978.herokuapp.com/');
 	//connection.onmessage = receiveMessage;
 
-	var options = { color: "#FF0000", multitouch: "true",  maxNumberOfNipples: 2 };
+	var options = { zone: document.getElementById('canvas'), color: "#FF0000", multitouch: "true",  maxNumberOfNipples: 2 };
 	manager = nipplejs.create(options);
 
 	//Nipple Event Listeners
@@ -166,7 +209,8 @@ function webGLStart() {
 
 	// start the drawing loop
 	tick();
-};
+
+}
 
 
 
@@ -177,19 +221,13 @@ function handleTouchStart(event){
 	/*
 	if(touches.length >= 2)
 		return;
-
 	var touch = touches[touches.length-1];
-
 	var dx = touch.clientX - joystick1.centerX;
 	var dy = touch.clientY - joystick1.centerY;
-
 	if((dx * dx + dy * dy) <= (joystick1.radius * joystick1.radius))
 		joystick1.handleTouchStart(touch);
-
-
 	dx = touch.clientX - joystick2.centerX;
 	dy = touch.clientY - joystick2.centerY;
-
 	if((dx * dx + dy * dy) <= (joystick2.radius * joystick2.radius))
 		joystick2.handleTouchStart(touch);
 	*/
