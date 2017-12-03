@@ -1,7 +1,8 @@
 //asteroid clone (core mechanics only)
 //arrow keys to move + x to shoot
 
-var bullets;
+var redBullets;
+var blueBullets;
 var asteroids;
 var redShips;
 var blueShips;
@@ -20,9 +21,6 @@ function setup() {
     shipImage = loadImage("assets/ship_rot.png");
     particleImage = loadImage("assets/asteroids_particle.png");
 
-    redShips = [createShip()];
-    blueShips = [createShip()];
-
     // specify width and height of each frame and number of frames
     // explode_sheet = loadSpriteSheet('assets/fire_sheet.png', 219, 219, 48);
     explode_animation = loadAnimation("assets/exp1.png", 
@@ -40,7 +38,16 @@ function setup() {
     //ship.addAnimation("thrust", "assets/ship_20.png", "assets/ship_20.png");
 
     asteroids = new Group();
-    bullets = new Group();
+    redBullets = new Group();
+    blueBullets = new Group();
+    redShips = new Group();
+    blueShips = new Group();
+
+    for(var i = 0; i < 1; i++){
+	redShips.add(createShip());
+	blueShips.add(createShip());
+    }
+	
     domain = {x: Math.random()*width, y: Math.random()*height};
 
     initialTime = new Date();
@@ -59,9 +66,6 @@ function setup() {
 function draw() {
     clear();
     background(0);
-
-    // animate the sprite sheet
-    animation(explode_animation, 100, 130);
   
     fill(255, 0, 0);
     textAlign(CENTER);
@@ -85,8 +89,11 @@ function draw() {
         domain = {x: Math.random()*width, y: Math.random()*height};
     }
 
-    asteroids.overlap(bullets, asteroidHit);
-  
+    asteroids.overlap(redBullets, asteroidHit);
+    asteroids.overlap(blueBullets, asteroidHit);
+    redShips.overlap(blueBullets, shipHit);
+    blueShips.overlap(redBullets, shipHit);
+    
     redShips[0].bounce(asteroids);
   
     if(keyDown(LEFT_ARROW))
@@ -123,7 +130,7 @@ function draw() {
         bullet.setSpeed(10+redShips[0].getSpeed(), redShips[0].rotation);
         bullet.rotation = redShips[0].rotation;
         bullet.life = 60;
-        bullets.add(bullet);
+        redBullets.add(bullet);
     }
 
     if(keyWentDown("w"))
@@ -133,7 +140,7 @@ function draw() {
         bullet.setSpeed(10+blueShips[0].getSpeed(), blueShips[0].rotation);
         bullet.rotation = blueShips[0].rotation;
         bullet.life = 60;
-        bullets.add(bullet);
+        blueBullets.add(bullet);
     }
 
   
@@ -170,6 +177,7 @@ function createShip() {
     ship.addImage(shipImage, "normal");
     ship.addAnimation("thrust", "assets/ship_rot_fire1.png", "assets/ship_rot_fire2.png");
     ship.addImage(shipImage);
+    ship.type = 10;
     return ship; 
 }
 
@@ -220,4 +228,17 @@ function drawDomain() {
 
     noStroke();
     ellipse(domain.x, domain.y, 2*domainRadius, 2*domainRadius);
+}
+
+function shipHit(ship, bullet){
+    ship.type = ship.type - 1;
+    if (ship.type < 0){
+	//ship.life = 10;
+        // animate the sprite sheet
+        animation(explode_animation, ship.position.x, ship.position.y);	
+	ship.position.x = random(width);
+	ship.position.y = random(height);
+	ship.type = 10;
+    }
+       
 }
