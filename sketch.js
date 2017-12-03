@@ -19,8 +19,23 @@ function setup() {
     ship.friction = .1;
     ship.setCollider("circle", 0,0, 20);
 
-    ship.addImage(shipImage);
-    //ship.addAnimation("thrust", "assets/ship_20.png", "assets/ship_20.png");
+    ship.addImage(shipImage, "normal");
+    ship.addAnimation("thrust", "assets/ship_rot_fire1.png", "assets/ship_rot_fire2.png");
+
+    // specify width and height of each frame and number of frames
+    // explode_sheet = loadSpriteSheet('assets/fire_sheet.png', 219, 219, 48);
+    explode_animation = loadAnimation("assets/exp1.png", 
+				      "assets/exp2.png",
+				      "assets/exp3.png",
+				      "assets/exp4.png",
+				      "assets/exp5.png",
+				      "assets/exp6.png",
+				      "assets/exp7.png",
+				      "assets/exp8.png",
+				      "assets/exp9.png",
+				      "assets/exp10.png",
+				      "assets/exp11.png",
+				      "assets/exp12.png");
 
     asteroids = new Group();
     bullets = new Group();
@@ -34,7 +49,11 @@ function setup() {
 }
 
 function draw() {
+    clear();
     background(0);
+
+    // animate the sprite sheet
+    animation(explode_animation, 100, 130);
   
     fill(255, 0, 0);
     textAlign(CENTER);
@@ -63,10 +82,10 @@ function draw() {
     if(keyDown(UP_ARROW))
 	{
 	    ship.addSpeed(2.9, ship.rotation);
-	    //ship.changeAnimation("thrust");
+	    ship.changeAnimation("thrust");
 	}
-    //else
-	//ship.changeAnimation("normal");
+    else
+	ship.changeAnimation("normal");
     
     if(keyWentDown("x"))
 	{
