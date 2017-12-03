@@ -82,9 +82,6 @@ function draw() {
 
     var currentTime = new Date();
     var ellapsed = (currentTime.getTime() - lastDomainStateChange.getTime())/1000;
-
-    // animate the sprite sheet
-    animation(explode_animation, 100, 130);
   
     fill(255, 0, 0);
     textAlign(CENTER);
