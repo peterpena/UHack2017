@@ -31,6 +31,20 @@ function setup() {
     redShips = [createShip()];
     blueShips = [createShip()];
 
+    // specify width and height of each frame and number of frames
+    // explode_sheet = loadSpriteSheet('assets/fire_sheet.png', 219, 219, 48);
+    explode_animation = loadAnimation("assets/exp1.png", 
+				      "assets/exp2.png",
+				      "assets/exp3.png",
+				      "assets/exp4.png",
+				      "assets/exp5.png",
+				      "assets/exp6.png",
+				      "assets/exp7.png",
+				      "assets/exp8.png",
+				      "assets/exp9.png",
+				      "assets/exp10.png",
+				      "assets/exp11.png",
+				      "assets/exp12.png");
     //ship.addAnimation("thrust", "assets/ship_20.png", "assets/ship_20.png");
 
     asteroids = new Group();
@@ -56,11 +70,15 @@ function setup() {
 }
 
 function draw() {
+    clear();
     background(0);
 
     var currentTime = new Date();
     var ellapsed = (currentTime.getTime() - lastDomainStateChange.getTime())/1000;
 
+    // animate the sprite sheet
+    animation(explode_animation, 100, 130);
+  
     fill(255, 0, 0);
     textAlign(CENTER);
     text("Time: " + (redScore + ((domainState == RED)? ellapsed : 0)).toFixed(1), width/2-40, 20);
@@ -93,10 +111,11 @@ function draw() {
     if(keyDown(UP_ARROW))
     {
         redShips[0].addSpeed(2.9, redShips[0].rotation);
-        //ship.changeAnimation("thrust");
+        redShips[0].changeAnimation("thrust");
     }
-    //else
-    //ship.changeAnimation("normal");
+    else{
+	redShips[0].changeAnimation("normal");
+    }
     
     if(keyDown("a"))
     blueShips[0].rotation -= 4;
@@ -105,10 +124,12 @@ function draw() {
     if(keyDown("s"))
     {
         blueShips[0].addSpeed(2.9, blueShips[0].rotation);
+        blueShips[0].changeAnimation("thrust");
+    }
+    else{
+	blueShips[0].changeAnimation("normal");
         //ship.changeAnimation("thrust");
     }
-    //else
-    //ship.changeAnimation("normal");
     
     if(keyWentDown("x"))
     {
@@ -161,6 +182,8 @@ function createShip() {
     ship.maxSpeed = 6;
     ship.friction = .1;
     ship.setCollider("circle", 0,0, 20);
+    ship.addImage(shipImage, "normal");
+    ship.addAnimation("thrust", "assets/ship_rot_fire1.png", "assets/ship_rot_fire2.png");
     ship.addImage(shipImage);
     return ship; 
 }
