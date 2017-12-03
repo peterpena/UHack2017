@@ -37,6 +37,7 @@ function setup() {
 				      "assets/exp10.png",
 				      "assets/exp11.png",
 				      "assets/exp12.png");
+    //ship.addAnimation("thrust", "assets/ship_20.png", "assets/ship_20.png");
 
     asteroids = new Group();
     bullets = new Group();
@@ -99,6 +100,7 @@ function draw() {
     }
     else
 	redShips[0].changeAnimation("normal");
+    }
     
     if(keyDown("a"))
     blueShips[0].rotation -= 4;
@@ -111,6 +113,8 @@ function draw() {
     }
     else
 	blueShips[0].changeAnimation("normal");
+        //ship.changeAnimation("thrust");
+    }
     
     if(keyWentDown("x"))
     {
@@ -165,6 +169,7 @@ function createShip() {
     ship.setCollider("circle", 0,0, 20);
     ship.addImage(shipImage, "normal");
     ship.addAnimation("thrust", "assets/ship_rot_fire1.png", "assets/ship_rot_fire2.png");
+    ship.addImage(shipImage);
     return ship; 
 }
 
