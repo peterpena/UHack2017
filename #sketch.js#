@@ -10,17 +10,17 @@ var MARGIN = 40;
 function setup() {
     createCanvas(1200,800);
 
-    bulletImage = loadImage("assets/asteroids_bullet_20.png");
-    shipImage = loadImage("assets/ship_rot.png");
+    bulletImage = loadImage("assets/asteroids_bullet.png");
+    shipImage = loadImage("assets/ship_20.png");
     particleImage = loadImage("assets/asteroids_particle.png");
 
     ship = createSprite(width/2, height/2);
     ship.maxSpeed = 6;
-    ship.friction = .1;
+    ship.friction = .98;
     ship.setCollider("circle", 0,0, 20);
 
-    ship.addImage(shipImage);
-    //ship.addAnimation("thrust", "assets/ship_20.png", "assets/ship_20.png");
+    ship.addImage("normal", shipImage);
+    ship.addAnimation("thrust", "assets/ship_20.png", "assets/ship_20.png");
 
     asteroids = new Group();
     bullets = new Group();
@@ -58,19 +58,18 @@ function draw() {
 	ship.rotation += 4;
     if(keyDown(UP_ARROW))
 	{
-	    ship.addSpeed(2.9, ship.rotation);
-	    //ship.changeAnimation("thrust");
+	    ship.setSpeed(.2, ship.rotation);
+	    ship.changeAnimation("thrust");
 	}
-    //else
-	//ship.changeAnimation("normal");
+    else
+	ship.changeAnimation("normal");
     
     if(keyWentDown("x"))
 	{
 	    var bullet = createSprite(ship.position.x, ship.position.y);
-	    bullet.addImage(bulletImage);
+	    bullet.axddImage(bulletImage);
 	    bullet.setSpeed(10+ship.getSpeed(), ship.rotation);
-	    bullet.rotation = ship.rotation;
-	    bullet.life = 60;
+	    bullet.life = 30;
 	    bullets.add(bullet);
 	}
   
@@ -106,13 +105,13 @@ function asteroidHit(asteroid, bullet) {
 	createAsteroid(newType, asteroid.position.x, asteroid.position.y);
     }
 
-    /*for(var i=0; i<10; i++) {
+    for(var i=0; i<10; i++) {
 	var p = createSprite(bullet.position.x, bullet.position.y);
 	p.addImage(particleImage);
 	p.setSpeed(random(3,5), random(360));
 	p.friction = 0.95;
 	p.life = 15;
-	}*/
+    }
 
     bullet.remove();
     asteroid.remove();
