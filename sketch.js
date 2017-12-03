@@ -12,7 +12,15 @@ var MARGIN = 40;
 var domainRadius = 200;
 var initialTime;
 var domainChangeInterval = 5000;
-var timeLastDomainChange;
+var lastDomainPosChange;
+var lastDomainStateChange;
+var redScore;
+var blueScore;
+var domainState;
+const RED = 0;
+const BLUE = 1;
+const NONE = 2;
+
 
 function setup() {
     createCanvas(1400,800);
@@ -51,7 +59,12 @@ function setup() {
     domain = {x: Math.random()*width, y: Math.random()*height};
 
     initialTime = new Date();
-    timeLastDomainChange = initialTime;
+    lastDomainPosChange = initialTime;
+    lastDomainStateChange = initialTime;
+    redScore = 0;
+    blueScore = 0;
+    domainState = NONE;
+
 
     for(var i = 0; i<8; i++) {
 	var ang = random(360);
@@ -66,14 +79,20 @@ function setup() {
 function draw() {
     clear();
     background(0);
+
+    var currentTime = new Date();
+    var ellapsed = (currentTime.getTime() - lastDomainStateChange.getTime())/1000;
+
+    // animate the sprite sheet
+    animation(explode_animation, 100, 130);
   
     fill(255, 0, 0);
     textAlign(CENTER);
-    text("Time:", width/2-40, 20);
+    text("Time: " + (redScore + ((domainState == RED)? ellapsed : 0)).toFixed(1), width/2-40, 20);
 
     fill(0, 0, 255);
     textAlign(CENTER);
-    text("Time:", width/2+40, 20);
+    text("Time: " + (blueScore + ((domainState == BLUE)? ellapsed : 0)).toFixed(1), width/2+40, 20);
   
     for(var i=0; i<allSprites.length; i++) {
 	var s = allSprites[i];
@@ -83,9 +102,8 @@ function draw() {
 	if(s.position.y>height+MARGIN) s.position.y = -MARGIN;
     }
 
-    var currentTime = new Date();
-    if (currentTime.getTime() - timeLastDomainChange.getTime() > domainChangeInterval) {
-        timeLastDomainChange = currentTime;
+    if (currentTime.getTime() - lastDomainPosChange.getTime() > domainChangeInterval) {
+        lastDomainPosChange = currentTime;
         domain = {x: Math.random()*width, y: Math.random()*height};
     }
 
@@ -201,17 +219,10 @@ function asteroidHit(asteroid, bullet) {
     asteroid.remove();
 }
 
-function changeDomainPos() {
-    domain = {x: Math.random()*width, y: Math.random()*height};
-}
-
 function drawDomain() {
     var redCount = 0;
     var blueCount = 0;
     
-    // console.log(redShips[0].position.x + " " + redShips[0].position.y);
-    // console.log(blueShips[0].position.x + " " + blueShips[0].position.y);
-
     for (var i=0; i<redShips.length; i++) 
         if (Math.sqrt(Math.pow(redShips[i].position.x-domain.x, 2) + Math.pow(redShips[i].position.y-domain.y, 2)) <domainRadius)
             redCount++;
@@ -219,12 +230,32 @@ function drawDomain() {
         if (Math.sqrt(Math.pow(blueShips[i].position.x-domain.x, 2) + Math.pow(blueShips[i].position.y-domain.y, 2)) <domainRadius)
             blueCount++;
 
-    if (redCount == 0 && blueCount > 0)
-        fill(0, 0, 255, 100);
-    else if (blueCount == 0 && redCount > 0)
+    var new_state;
+
+    if (blueCount == 0 && redCount > 0) {
         fill(255, 0, 0, 100);
-    else
+        new_state = RED;
+    } else if (redCount == 0 && blueCount > 0) {
+        fill(0, 0, 255, 100);
+        new_state = BLUE;
+    } else {
         fill(125, 125, 125, 100);
+        new_state = NONE;
+    }
+
+    var currentTime = new Date();
+    var ellapsed = (currentTime.getTime() - lastDomainStateChange.getTime())/1000;
+    
+    if (domainState != new_state) {
+        if (domainState == RED)
+            redScore = redScore + ellapsed;
+
+        if (domainState == BLUE)
+            blueScore = blueScore + ellapsed;
+
+        lastDomainStateChange = currentTime;
+    }
+    domainState = new_state;
 
     noStroke();
     ellipse(domain.x, domain.y, 2*domainRadius, 2*domainRadius);
